@@ -1,22 +1,30 @@
 const { spawnSync } = require('child_process');
 const fs = require('fs');
+const crypto = require('crypto');
 
-// Aapka confirmed path
+// Aapka confirmed path jo terminal ne diya tha
 const gitPath = "C:\\Program Files\\Git\\mingw64\\bin\\git.exe";
-const totalCommits = 150;
+const totalCommits = 300;
+const fileName = 'activity.txt';
 
-console.log("Starting auto commits...");
+console.log("Starting 300 unique commits manually...");
 
 for (let i = 1; i <= totalCommits; i++) {
-    const content = `Commit number: ${i} - Date: ${new Date().toISOString()}\n`;
-    fs.appendFileSync('activity.txt', content);
+    // Har baar unique content taake commit repeat na ho
+    const randomContent = crypto.randomBytes(16).toString('hex');
+    const timestamp = new Date().toISOString();
 
-    // Git Add
-    spawnSync(gitPath, ['add', 'activity.txt']);
-    
+    const line = `Commit: ${i} | ID: ${randomContent} | Time: ${timestamp}\n`;
+
+    // File update karna
+    fs.appendFileSync(fileName, line);
+
+    // Git Add (Using your gitPath)
+    spawnSync(gitPath, ['add', fileName]);
+
     // Git Commit
-    const commit = spawnSync(gitPath, ['commit', '-m', `Auto commit #${i}`]);
-    
+    const commit = spawnSync(gitPath, ['commit', '-m', `Manual Commit #${i}: ${randomContent}`]);
+
     if (commit.error) {
         console.error(`Error at commit ${i}:`, commit.error.message);
         break;
@@ -26,11 +34,12 @@ for (let i = 1; i <= totalCommits; i++) {
 }
 
 console.log("Pushing to GitHub...");
-// Git Push (Master branch)
-const push = spawnSync(gitPath, ['push', 'origin', 'master']);
+
+// Git Push (Check karein ke aapki branch 'master' hi hai)
+const push = spawnSync(gitPath, ['push', 'origin', 'main']);
 
 if (push.error) {
-    console.error("Push fail ho gaya:", push.error.message);
+    console.error("Push fail ho gaya. Internet check karein.");
 } else {
-    console.log("Mubarak ho! Sab kuch sahi se ho gaya.");
+    console.log("Success! 300 unique commits push ho gaye hain.");
 }
