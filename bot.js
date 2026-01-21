@@ -36,7 +36,7 @@ for (let i = 1; i <= totalCommits; i++) {
 console.log("Pushing to GitHub...");
 
 // Git Push (Check karein ke aapki branch 'master' hi hai)
-const push = spawnSync(gitPath, ['push', 'origin', 'main']);
+const push = spawnSync(gitPath, ['push', 'origin', 'master']);
 
 if (push.error) {
     console.error("Push fail ho gaya. Internet check karein.");
