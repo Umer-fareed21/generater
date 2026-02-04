@@ -4,7 +4,7 @@ const crypto = require('crypto');
 
 // Aapka confirmed path jo terminal ne diya tha
 const gitPath = "C:\\Program Files\\Git\\mingw64\\bin\\git.exe";
-const totalCommits = 300;
+const totalCommits = 500;
 const fileName = 'activity.txt';
 
 console.log("Starting 300 unique commits manually...");
@@ -36,7 +36,7 @@ for (let i = 1; i <= totalCommits; i++) {
 console.log("Pushing to GitHub...");
 
 // Git Push (Check karein ke aapki branch 'master' hi hai)
-const push = spawnSync(gitPath, ['push', 'origin', 'master']);
+const push = spawnSync(gitPath, ['push', '-f', 'origin', 'master']);
 
 if (push.error) {
     console.error("Push fail ho gaya. Internet check karein.");
