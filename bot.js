@@ -1,45 +1,46 @@
-const { spawnSync } = require('child_process');
-const fs = require('fs');
-const crypto = require('crypto');
+const { spawnSync } = require("child_process");
+const fs = require("fs");
+const crypto = require("crypto");
 
-// Aapka confirmed path jo terminal ne diya tha
-const gitPath = "C:\\Program Files\\Git\\mingw64\\bin\\git.exe";
-const totalCommits = 500;
-const fileName = 'activity.txt';
+// Git ka exact path (Git Bash compatible)
+const gitPath = "C:\\Program Files\\Git\\bin\\git.exe";
 
-console.log("Starting 300 unique commits manually...");
+// pehle chota number rakho test ke liye
+const totalCommits = 50;
+
+// file jisme activity likhi jaegi
+const fileName = "activity.txt";
+
+console.log("commit bot started...\n");
 
 for (let i = 1; i <= totalCommits; i++) {
-    // Har baar unique content taake commit repeat na ho
-    const randomContent = crypto.randomBytes(16).toString('hex');
-    const timestamp = new Date().toISOString();
+    const random = crypto.randomBytes(8).toString("hex");
+    const line = `commit ${i} | ${random} | ${new Date().toISOString()}\n`;
 
-    const line = `Commit: ${i} | ID: ${randomContent} | Time: ${timestamp}\n`;
-
-    // File update karna
+    // file update
     fs.appendFileSync(fileName, line);
 
-    // Git Add (Using your gitPath)
-    spawnSync(gitPath, ['add', fileName]);
+    // git add
+    spawnSync(gitPath, ["add", "."], { stdio: "inherit" });
 
-    // Git Commit
-    const commit = spawnSync(gitPath, ['commit', '-m', `Manual Commit #${i}: ${randomContent}`]);
+    // git commit
+    const commit = spawnSync(
+        gitPath,
+        ["commit", "-m", `bot commit ${i} ${random}`],
+        { stdio: "inherit" }
+    );
 
-    if (commit.error) {
-        console.error(`Error at commit ${i}:`, commit.error.message);
+    if (commit.status !== 0) {
+        console.log("❌ commit fail hui, bot ruk gaya");
         break;
-    } else {
-        console.log(`Commit ${i}/${totalCommits} done.`);
     }
+
+    console.log(`✅ commit ${i}/${totalCommits} done`);
 }
 
-console.log("Pushing to GitHub...");
+console.log("\npushing to github...\n");
 
-// Git Push (Check karein ke aapki branch 'master' hi hai)
-const push = spawnSync(gitPath, ['push', '-f', 'origin', 'master']);
+// git push
+spawnSync(gitPath, ["push", "origin", "master"], { stdio: "inherit" });
 
-if (push.error) {
-    console.error("Push fail ho gaya. Internet check karein.");
-} else {
-    console.log("Success! 300 unique commits push ho gaye hain.");
-}
+console.log("\n🎉 all done");
