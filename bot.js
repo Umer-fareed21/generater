@@ -6,7 +6,7 @@ const crypto = require("crypto");
 const gitPath = "C:\\Program Files\\Git\\bin\\git.exe";
 
 // pehle chota number rakho test ke liye
-const totalCommits = 1000;
+const totalCommits = 500;
 
 // file jisme activity likhi jaegi
 const fileName = "activity.txt";
